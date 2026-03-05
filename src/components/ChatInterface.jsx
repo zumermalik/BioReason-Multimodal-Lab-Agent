@@ -36,9 +36,12 @@ const ChatInterface = () => {
   };
 
   return (
-    <section id="demo-workspace" className="py-12 px-6">
+    // REMOVED the dark background from the section
+    <section id="demo-workspace" className="py-20 px-6"> 
       <div className="max-w-4xl mx-auto">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/50 shadow-2xl overflow-hidden">
+        
+        {/* ADDED a subtle light shadow and white ring to the dark terminal */}
+        <div className="rounded-2xl border border-slate-800 bg-[#0A0F1C] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] ring-1 ring-white/10 overflow-hidden">
           
           {/* Header */}
           <div className="flex items-center gap-2 px-5 py-3 border-b border-slate-800 bg-slate-900">
