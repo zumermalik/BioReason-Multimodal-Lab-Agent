@@ -2,15 +2,39 @@ import { ShieldAlert } from 'lucide-react';
 
 const Navbar = () => {
   return (
-    <nav className="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-      <div className="flex items-center gap-2">
-        <ShieldAlert className="text-emerald-500 w-6 h-6" />
-        <span className="text-xl font-bold tracking-tight text-white">BioReason<span className="text-emerald-500">.ai</span></span>
-      </div>
-      <div className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-        v0.1 Hackathon MVP
-      </div>
-    </nav>
+    <div className="fixed top-0 w-full z-50 flex justify-center pt-6 px-4">
+      <nav className="w-full max-w-5xl bg-white/90 backdrop-blur-md px-6 py-3 rounded-full shadow-sm border border-slate-200 flex items-center justify-between transition-all">
+        
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <ShieldAlert className="text-slate-900 w-6 h-6" />
+          <span className="text-xl font-bold tracking-tight text-slate-900 font-serif">
+            BioReason
+          </span>
+        </div>
+        
+        {/* Links (Hidden on mobile for clean UI) */}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+          <a href="#" className="hover:text-slate-900 transition-colors">Methodology</a>
+          <a href="#" className="hover:text-slate-900 transition-colors">Security</a>
+          <a href="#" className="hover:text-slate-900 transition-colors">GitHub</a>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:block text-xs font-mono text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+            v0.1 MVP
+          </div>
+          <button 
+            onClick={() => document.getElementById('demo-workspace')?.scrollIntoView({ behavior: 'smooth' })}
+            className="bg-[#245336] hover:bg-[#1a3d27] text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-md"
+          >
+            Launch Instance
+          </button>
+        </div>
+
+      </nav>
+    </div>
   );
 };
 
