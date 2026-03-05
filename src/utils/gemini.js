@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // ⚠️ PASTE YOUR ACTUAL API KEY HERE
-const API_KEY = "YOUR_ACTUAL_GEMINI_KEY_HERE"; 
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 const fileToGenerativePart = async (file) => {
   const base64EncodedDataPromise = new Promise((resolve, reject) => {
