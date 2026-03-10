@@ -3,6 +3,7 @@ import HeroSection from './components/HeroSection.jsx'
 import ChatInterface from './components/ChatInterface.jsx'
 import FinOpsDashboard from './components/FinOpsDashboard.jsx' // <-- We imported it!
 import InfoSections from './components/InfoSections.jsx'
+import Integrations from './components/Integrations.jsx'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         
         {/* The NEW Premium FinOps Dashboard */}
         <FinOpsDashboard />
+        <Integrations />
         
         {/* The Methodology and Security Explainer */}
         <InfoSections />
