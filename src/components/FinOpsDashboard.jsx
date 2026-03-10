@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { 
   LayoutDashboard, FlaskConical, ShoppingCart, Settings, 
   ArrowUpRight, ArrowDownRight, DollarSign, ShieldAlert, 
-  FileText, CheckCircle2, Download, Lock, FileSignature 
+  FileText, CheckCircle2, Download, Lock, FileSignature, User, Key
 } from 'lucide-react';
+import { useUser, SignInButton } from "@clerk/clerk-react"; // <--CLERK IMPORT
+const { isSignedIn, user } = useUser();
 
 const FinOpsDashboard = () => {
   // This state tracks which tab is currently active
@@ -285,17 +287,72 @@ const FinOpsDashboard = () => {
               </div>
             )}
 
-            {/* ----------------- TAB 5: SETTINGS ----------------- */}
+            {/* ----------------- TAB 5: SETTINGS (Now Auth-Protected) ----------------- */}
             {activeTab === 'settings' && (
-              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col items-center justify-center h-full min-h-[400px] text-center">
-                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                  <Lock className="w-8 h-8 text-slate-400" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">Authentication Required</h3>
-                <p className="text-slate-500 mb-6 max-w-sm">You must be logged in as an Organization Admin to modify pipeline settings and API keys.</p>
-                <button className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-medium transition-colors">
-                  Login to Access
-                </button>
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-full">
+                {!isSignedIn ? (
+                  /* LOCKED STATE */
+                  <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-center">
+                    <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4 border border-slate-200">
+                      <Lock className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-2">Authentication Required</h3>
+                    <p className="text-slate-500 mb-6 max-w-sm">You must be logged in as an Organization Admin to modify pipeline settings and API keys.</p>
+                    <SignInButton mode="modal">
+                      <button className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-medium transition-colors shadow-sm">
+                        Login to Access
+                      </button>
+                    </SignInButton>
+                  </div>
+                ) : (
+                  /* UNLOCKED STATE */
+                  <div>
+                    <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
+                      <div>
+                        <h3 className="text-2xl font-bold text-slate-900">Workspace Settings</h3>
+                        <p className="text-sm text-slate-500">Manage your lab preferences and API connections.</p>
+                      </div>
+                      <div className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4" /> Authenticated
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      {/* Profile Section */}
+                      <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-4">
+                        <img src={user.imageUrl} alt="Profile" className="w-16 h-16 rounded-full border border-slate-200 shadow-sm" />
+                        <div>
+                          <div className="font-bold text-slate-900 text-lg">{user.fullName || 'Admin User'}</div>
+                          <div className="text-sm text-slate-500">{user.primaryEmailAddress?.emailAddress}</div>
+                          <div className="text-xs font-mono text-slate-400 mt-1">ID: {user.id.substring(0, 15)}...</div>
+                        </div>
+                      </div>
+
+                      {/* API Key Management */}
+                      <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                        <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                          <Key className="w-4 h-4 text-slate-500" /> LLM Configuration
+                        </h4>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Primary AI Engine</label>
+                            <select className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-[#D9FA50]">
+                              <option>Gemini 1.5 Pro (Multimodal) - Default</option>
+                              <option>Gemini 1.5 Flash (High Speed)</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Custom API Key</label>
+                            <div className="flex gap-2">
+                              <input type="password" value="************************" readOnly className="flex-1 p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none" />
+                              <button className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition-colors">Update</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
