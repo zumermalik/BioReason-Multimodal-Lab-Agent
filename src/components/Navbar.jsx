@@ -13,11 +13,11 @@ const Navbar = () => {
           </span>
         </div>
         
-        {/* Links (Hidden on mobile for clean UI) */}
+       {/* Links (Hidden on mobile for clean UI) */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-          <a href="#" className="hover:text-slate-900 transition-colors">Methodology</a>
-          <a href="#" className="hover:text-slate-900 transition-colors">Security</a>
-          <a href="#" className="hover:text-slate-900 transition-colors">GitHub</a>
+          <a href="#methodology" className="hover:text-slate-900 transition-colors">Methodology</a>
+          <a href="#security" className="hover:text-slate-900 transition-colors">Security</a>
+          <a href="https://github.com/zumermalik/BioReason-Multimodal-Lab-Agent" target="_blank" rel="noreferrer" className="hover:text-slate-900 transition-colors">GitHub</a>
         </div>
 
         {/* Action Buttons */}
