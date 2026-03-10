@@ -1,4 +1,5 @@
-import { Network, ShieldCheck } from "lucide-react";
+// Look at line 2: We are importing ALL four icons here now.
+import { Network, ShieldCheck, BarChart2, Check } from "lucide-react";
 
 const InfoSections = () => {
   return (
@@ -64,6 +65,7 @@ const InfoSections = () => {
           </p>
         </div>
       </div>
+
       {/* Future Features / FinOps Section */}
       <div id="features" className="scroll-mt-32 grid md:grid-cols-2 gap-12 items-center pt-20 border-t border-slate-200">
         <div>
@@ -73,48 +75,4 @@ const InfoSections = () => {
           <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-4 tracking-tight">
             R&D Economics <br/><span className="italic text-slate-500">Copilot.</span>
           </h2>
-          <p className="text-slate-600 leading-relaxed mb-8">
-            Make data-driven procurement decisions with real-time FinOps analytics built directly into your protocol workflow. Coming in v0.2.
-          </p>
-          
-          <ul className="space-y-4">
-            <li className="flex items-center text-slate-700 font-medium">
-              <Check className="w-5 h-5 text-slate-900 mr-3" />
-              Vendor Arbitrage & Invoice Parsing
-            </li>
-            <li className="flex items-center text-slate-700 font-medium">
-              <Check className="w-5 h-5 text-slate-900 mr-3" />
-              Per-Reaction Cost Optimization
-            </li>
-            <li className="flex items-center text-slate-700 font-medium">
-              <Check className="w-5 h-5 text-slate-900 mr-3" />
-              Customizable Financial Dashboards
-            </li>
-            <li className="flex items-center text-slate-700 font-medium">
-              <Check className="w-5 h-5 text-slate-900 mr-3" />
-              Predictive Burn-Rate Analysis
-            </li>
-          </ul>
-        </div>
-        
-        {/* Soft Graphic Container */}
-        <div className="bg-[#F8F9F5] p-8 sm:p-12 rounded-[2rem] border border-slate-100 flex items-center justify-center relative overflow-hidden">
-          {/* Decorative dashed rings */}
-          <div className="absolute inset-4 border border-dashed border-slate-200 rounded-[1.5rem]"></div>
-          <div className="absolute inset-8 border border-dashed border-slate-200 rounded-[1rem]"></div>
-          
-          {/* Mock Chart Graphic */}
-          <div className="relative z-10 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 flex items-end gap-3 h-48 w-full max-w-sm">
-            <div className="w-1/4 bg-[#E2E8F0] rounded-t-lg h-[40%]"></div>
-            <div className="w-1/4 bg-[#94A3B8] rounded-t-lg h-[80%]"></div>
-            <div className="w-1/4 bg-[#E2E8F0] rounded-t-lg h-[60%]"></div>
-            <div className="w-1/4 bg-[#CBD5E1] rounded-t-lg h-[30%]"></div>
-          </div>
-        </div>
-      </div>
-
-    </section>
-  );
-};
-
-export default InfoSections;
+          <p className="text-slate-600 leading-relaxed mb
