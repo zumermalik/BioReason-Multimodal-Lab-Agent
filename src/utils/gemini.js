@@ -1,7 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// ⚠️ PASTE YOUR ACTUAL API KEY HERE
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY; 
 
 const fileToGenerativePart = async (file) => {
   const base64EncodedDataPromise = new Promise((resolve, reject) => {
@@ -15,9 +14,9 @@ const fileToGenerativePart = async (file) => {
   };
 };
 
-export const analyzeSafetyMVP = async (filesArray) => {
-  if (!API_KEY || API_KEY === "YOUR_ACTUAL_GEMINI_KEY_HERE") {
-    throw new Error("Missing API Key. Please update src/utils/gemini.js");
+export const analyzeSafetyMVP = async (filesArray, userText) => {
+  if (!API_KEY) {
+    throw new Error("Missing API Key in Vercel Environment Variables.");
   }
 
   const genAI = new GoogleGenerativeAI(API_KEY);
@@ -26,8 +25,12 @@ export const analyzeSafetyMVP = async (filesArray) => {
   const prompt = `
     ACT AS: BioReason Safety Agent.
     TASK: You are receiving an experimental protocol (PDF/Text) and an image of the physical lab setup.
-    1. Parse the protocol to understand the intended procedure and reagents.
-    2. Visually audit the lab setup image.
+    
+    ADDITIONAL USER CONTEXT / PASTED PROTOCOL TEXT: 
+    "${userText || 'No additional text provided.'}"
+
+    1. Parse the protocol (whether from the uploaded PDF or the text above) to understand the intended procedure and reagents.
+    2. Visually audit the lab setup image (if provided).
     3. Cross-reference the two: Are there missing reagents? Incompatible chemicals? Dangerous thermal setups?
     
     OUTPUT JSON format strictly:
@@ -36,7 +39,7 @@ export const analyzeSafetyMVP = async (filesArray) => {
       "status": "SAFE" | "WARNING" | "CRITICAL",
       "title": "Short Title of Audit",
       "hazards": ["List of specific conflicts between protocol and visual reality"],
-      "reasoning": "Brief explanation of your findings."
+      "reasoning": "Brief explanation of your findings based on the text and images."
     }
   `;
 
@@ -53,7 +56,6 @@ export const analyzeSafetyMVP = async (filesArray) => {
   const result = await model.generateContent(promptParts);
   const text = await result.response.text();
   
-  // Clean JSON output
   const cleanJson = text.replace(/```json|```/g, '').trim();
   return JSON.parse(cleanJson);
 };
