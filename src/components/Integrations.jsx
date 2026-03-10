@@ -31,29 +31,27 @@ const Integrations = () => {
             <div className="text-xs font-bold text-blue-600 uppercase tracking-widest">Active API Endpoint</div>
           </div>
 
-          {/* SAP/Quartzy ERP Card */}
+         {/* Quartzy/Inventory Card */}
           <div className="p-8 rounded-[2rem] bg-slate-900 border border-slate-800 shadow-xl group">
             <div className="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform">
-              {/* Official SAP Logo tinted to match our Lime Green theme */}
-              <img src="https://cdn.simpleicons.org/sap/D9FA50" alt="SAP Logo" className="w-8 h-8" />
+              <Workflow className="w-6 h-6 text-[#D9FA50]" />
             </div>
             <h3 className="text-xl font-bold text-white mb-3">Inventory ERPs</h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-6">
-              When a protocol is audited, BioReason instantly queries SAP or Quartzy to verify reagent stock levels, flagging supply chain bottlenecks before the experiment begins.
+              When a protocol is audited, BioReason instantly queries Quartzy or SAP to verify reagent stock levels, flagging supply chain bottlenecks before the experiment begins.
             </p>
             <div className="text-xs font-bold text-[#D9FA50] uppercase tracking-widest">Automated Webhooks</div>
           </div>
-
           {/* Slack & Teams Alert Card */}
           <div className="p-8 rounded-[2rem] bg-[#F8F9F5] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
             <div className="flex gap-3 mb-6">
               <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
                 {/* Official Slack Logo */}
-                <img src="https://cdn.simpleicons.org/slack/E01E5A" alt="Slack Logo" className="w-6 h-6" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg" alt="Slack" className="w-6 h-6" />
               </div>
               <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform delay-75">
                 {/* Official Microsoft Teams Logo */}
-                <img src="https://cdn.simpleicons.org/microsoftteams/6264A7" alt="Teams Logo" className="w-6 h-6" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg" alt="Teams" className="w-6 h-6" />
               </div>
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-3">Safety Alerts</h3>
