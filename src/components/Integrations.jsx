@@ -37,7 +37,7 @@ const Integrations = () => {
           <div className="p-8 rounded-[2rem] bg-slate-900 border border-slate-800 shadow-xl group">
             <div className="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform">
               {/* Reliable Wikipedia SAP Logo */}
-              <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg" alt="SAP Logo" className="w-8 h-4" />
+              <img src="https://cdn.simpleicons.org/sap/D9FA50" alt="SAP Logo" className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-white mb-3">Inventory ERPs</h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-6">
@@ -55,7 +55,7 @@ const Integrations = () => {
               </div>
               <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform delay-75">
                 {/* Reliable Wikipedia Teams Logo */}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg" alt="Teams" className="w-6 h-6" />
+                <img src="https://img.icons8.com/color/48/microsoft-teams.png" alt="Teams" className="w-6 h-6" />
               </div>
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-3">Safety Alerts</h3>
