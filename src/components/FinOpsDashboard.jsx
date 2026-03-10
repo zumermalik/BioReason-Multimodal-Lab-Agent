@@ -5,11 +5,12 @@ import {
   FileText, CheckCircle2, Download, Lock, FileSignature, User, Key
 } from 'lucide-react';
 import { useUser, SignInButton } from "@clerk/clerk-react"; // <--CLERK IMPORT
-const { isSignedIn, user } = useUser();
+
 
 const FinOpsDashboard = () => {
   // This state tracks which tab is currently active
   const [activeTab, setActiveTab] = useState('dashboard');
+  const { isSignedIn, user } = useUser();
 
   // Helper function to style the active sidebar buttons
   const getTabClass = (tabName) => {
