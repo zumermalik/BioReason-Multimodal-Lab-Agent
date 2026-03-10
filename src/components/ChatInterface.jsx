@@ -6,10 +6,10 @@ const ChatInterface = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [textInput, setTextInput] = useState("");
 
   const handleFileSelect = (e) => {
     if (e.target.files) {
-      // Convert FileList to Array and keep existing files
       setSelectedFiles((prev) => [...prev, ...Array.from(e.target.files)]);
     }
   };
@@ -19,13 +19,17 @@ const ChatInterface = () => {
   };
 
   const runAnalysis = async () => {
-    if (selectedFiles.length === 0) return alert("Please upload at least an image or PDF.");
+    // Check if they provided AT LEAST text OR a file
+    if (selectedFiles.length === 0 && !textInput.trim()) {
+      return alert("Please upload a file or paste protocol text.");
+    }
     
     setIsAnalyzing(true);
     setAnalysisResult(null);
 
     try {
-      const result = await analyzeSafetyMVP(selectedFiles);
+      // Pass both the files and the text to the Brain
+      const result = await analyzeSafetyMVP(selectedFiles, textInput);
       setAnalysisResult(result);
     } catch (error) {
       console.error(error);
@@ -36,11 +40,8 @@ const ChatInterface = () => {
   };
 
   return (
-    // REMOVED the dark background from the section
     <section id="demo-workspace" className="py-20 px-6"> 
       <div className="max-w-4xl mx-auto">
-        
-        {/* ADDED a subtle light shadow and white ring to the dark terminal */}
         <div className="rounded-2xl border border-slate-800 bg-[#0A0F1C] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] ring-1 ring-white/10 overflow-hidden">
           
           {/* Header */}
@@ -58,9 +59,9 @@ const ChatInterface = () => {
           {/* Results Area */}
           <div className="p-6 min-h-[350px] flex flex-col font-mono">
             {isAnalyzing && (
-              <div className="m-auto flex flex-col items-center text-emerald-500 animate-pulse">
+              <div className="m-auto flex flex-col items-center text-[#D9FA50] animate-pulse">
                 <Loader2 className="w-8 h-8 mb-4 animate-spin" /> 
-                <span>Parsing PDF & Visual Inputs...</span>
+                <span>Parsing Multimodal Inputs...</span>
               </div>
             )}
 
@@ -97,7 +98,7 @@ const ChatInterface = () => {
             {!isAnalyzing && !analysisResult && (
                <div className="m-auto text-slate-600 flex flex-col items-center">
                  <Upload className="w-10 h-10 mb-4 opacity-50" />
-                 <p>Upload a Protocol (PDF) and Lab Setup (Image) to begin audit.</p>
+                 <p className="text-center">Paste protocol text below,<br/>or upload a PDF and Lab Setup (Image) to begin audit.</p>
                </div>
             )}
           </div>
@@ -118,8 +119,23 @@ const ChatInterface = () => {
               </div>
             )}
 
+            {/* NEW Text Bar + Upload Setup */}
             <div className="flex gap-3">
-              <div className="flex-1 relative flex items-center bg-slate-950 border border-slate-800 rounded-xl px-4 py-3">
+              <div className="flex-1 relative flex items-center bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 focus-within:border-[#D9FA50]/50 transition-colors">
+                
+                {/* Text Input */}
+                <input 
+                  type="text"
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                  placeholder="Paste protocol text or add context..."
+                  className="w-full bg-transparent text-sm text-white focus:outline-none placeholder-slate-500 py-2"
+                />
+                
+                {/* Separator Line */}
+                <div className="h-6 w-px bg-slate-800 mx-3"></div>
+                
+                {/* File Upload Icon */}
                 <input 
                   type="file" 
                   multiple 
@@ -128,22 +144,22 @@ const ChatInterface = () => {
                   className="hidden" 
                   id="file-upload" 
                 />
-                <label htmlFor="file-upload" className="cursor-pointer flex items-center text-slate-400 hover:text-emerald-400 transition-colors w-full">
-                  <Upload className="w-5 h-5 mr-3" />
-                  <span className="text-sm">Click to select PDF Protocol & Lab Image</span>
+                <label htmlFor="file-upload" className="cursor-pointer flex items-center text-slate-400 hover:text-[#D9FA50] transition-colors flex-shrink-0" title="Upload PDF or Image">
+                  <Upload className="w-5 h-5" />
                 </label>
               </div>
               
+              {/* Submit Button */}
               <button
                 onClick={runAnalysis}
-                disabled={isAnalyzing || selectedFiles.length === 0}
-                className="px-6 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                disabled={isAnalyzing || (selectedFiles.length === 0 && !textInput.trim())}
+                className="px-6 rounded-xl bg-[#D9FA50] text-slate-900 hover:bg-[#c9eb3b] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm font-semibold"
               >
                 {isAnalyzing ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowUp className="w-5 h-5" />}
               </button>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </section>
