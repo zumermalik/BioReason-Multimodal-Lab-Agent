@@ -1,40 +1,47 @@
-import { ShieldAlert } from 'lucide-react';
+import { Activity } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 const Navbar = () => {
   return (
-    <div className="fixed top-0 w-full z-50 flex justify-center pt-6 px-4">
-      <nav className="w-full max-w-5xl bg-white/90 backdrop-blur-md px-6 py-3 rounded-full shadow-sm border border-slate-200 flex items-center justify-between transition-all">
+    <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <ShieldAlert className="text-slate-900 w-6 h-6" />
-          <span className="text-xl font-bold tracking-tight text-slate-900 font-serif">
-            BioReason
-          </span>
-        </div>
-        
-       {/* Links (Hidden on mobile for clean UI) */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-          <a href="#methodology" className="hover:text-slate-900 transition-colors">Methodology</a>
-          <a href="#security" className="hover:text-slate-900 transition-colors">Security</a>
-          <a href="https://github.com/zumermalik/BioReason-Multimodal-Lab-Agent" target="_blank" rel="noreferrer" className="hover:text-slate-900 transition-colors">GitHub</a>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:block text-xs font-mono text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
-            v0.1 MVP
+          <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+            <Activity className="w-5 h-5 text-[#D9FA50]" />
           </div>
-          <button 
-            onClick={() => document.getElementById('demo-workspace')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-[#245336] hover:bg-[#1a3d27] text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-md"
-          >
-            Launch Instance
-          </button>
+          <span className="font-serif font-bold text-xl text-slate-900 tracking-tight">BioReason</span>
         </div>
 
-      </nav>
-    </div>
+        {/* Links & Auth */}
+        <div className="flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 mr-4">
+            <a href="#demo-workspace" className="hover:text-slate-900 transition-colors">Workspace</a>
+            <a href="#methodology" className="hover:text-slate-900 transition-colors">Methodology</a>
+            <a href="#security" className="hover:text-slate-900 transition-colors">Security</a>
+          </div>
+
+          {/* Clerk Auth UI */}
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="px-5 py-2 text-sm font-bold text-slate-900 bg-[#D9FA50] hover:bg-[#c9eb3b] rounded-xl transition-colors shadow-sm">
+                Admin Login
+              </button>
+            </SignInButton>
+          </SignedOut>
+          
+          <SignedIn>
+            <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+              <span className="text-sm font-medium text-slate-600 hidden sm:block">Verified Workspace</span>
+              {/* This renders the user's profile picture and account management dropdown */}
+              <UserButton /> 
+            </div>
+          </SignedIn>
+
+        </div>
+      </div>
+    </nav>
   );
 };
 
