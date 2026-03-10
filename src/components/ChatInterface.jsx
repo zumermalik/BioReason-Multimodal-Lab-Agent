@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { Upload, ArrowUp, Loader2, AlertTriangle, File, Image as ImageIcon } from "lucide-react";
+import { 
+  Upload, ArrowUp, Loader2, AlertTriangle, File, 
+  Image as ImageIcon, CheckCircle2, Info, FileDown, ShieldAlert
+} from "lucide-react";
 import { analyzeSafetyMVP } from "../utils/gemini";
 
 const ChatInterface = () => {
@@ -19,7 +22,6 @@ const ChatInterface = () => {
   };
 
   const runAnalysis = async () => {
-    // Check if they provided AT LEAST text OR a file
     if (selectedFiles.length === 0 && !textInput.trim()) {
       return alert("Please upload a file or paste protocol text.");
     }
@@ -28,7 +30,6 @@ const ChatInterface = () => {
     setAnalysisResult(null);
 
     try {
-      // Pass both the files and the text to the Brain
       const result = await analyzeSafetyMVP(selectedFiles, textInput);
       setAnalysisResult(result);
     } catch (error) {
@@ -39,71 +40,147 @@ const ChatInterface = () => {
     }
   };
 
+  // Helper for dynamic coloring based on safety status
+  const getStatusColors = (status) => {
+    if (status === 'SAFE') return { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', ring: 'text-emerald-500', icon: <CheckCircle2 className="w-6 h-6 text-emerald-500" /> };
+    if (status === 'WARNING') return { bg: 'bg-amber-500/10', border: 'border-amber-500/20', text: 'text-amber-400', ring: 'text-amber-500', icon: <AlertTriangle className="w-6 h-6 text-amber-500" /> };
+    return { bg: 'bg-rose-500/10', border: 'border-rose-500/20', text: 'text-rose-400', ring: 'text-rose-500', icon: <ShieldAlert className="w-6 h-6 text-rose-500" /> };
+  };
+
   return (
     <section id="demo-workspace" className="py-20 px-6"> 
       <div className="max-w-4xl mx-auto">
-        <div className="rounded-2xl border border-slate-800 bg-[#0A0F1C] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] ring-1 ring-white/10 overflow-hidden">
+        <div className="rounded-2xl border border-slate-800 bg-[#0A0F1C] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] ring-1 ring-white/10 overflow-hidden flex flex-col min-h-[600px]">
           
           {/* Header */}
-          <div className="flex items-center gap-2 px-5 py-3 border-b border-slate-800 bg-slate-900">
-            <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/60" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-              <div className="w-3 h-3 rounded-full bg-green-500/60" />
+          <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800 bg-slate-900">
+            <div className="flex items-center gap-2">
+              <div className="flex gap-2 mr-4">
+                <div className="w-3 h-3 rounded-full bg-red-500/60" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
+                <div className="w-3 h-3 rounded-full bg-green-500/60" />
+              </div>
+              <span className="text-xs text-slate-500 font-mono">
+                bioreason-core-engine — active
+              </span>
             </div>
-            <span className="ml-3 text-xs text-slate-500 font-mono">
-              bioreason — Gemini 3 Experimental (Multimodal) — active
-            </span>
+            <div className="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-1 rounded">
+              v0.3.1
+            </div>
           </div>
 
-          {/* Results Area */}
-          <div className="p-6 min-h-[350px] flex flex-col font-mono">
-            {isAnalyzing && (
-              <div className="m-auto flex flex-col items-center text-[#D9FA50] animate-pulse">
-                <Loader2 className="w-8 h-8 mb-4 animate-spin" /> 
-                <span>Parsing Multimodal Inputs...</span>
-              </div>
-            )}
-
-            {analysisResult && !isAnalyzing && (
-              <div className="bg-slate-950 border border-slate-800 rounded-lg p-6 w-full">
-                <div className="flex justify-between items-start mb-4 border-b border-slate-800 pb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-white">{analysisResult.title}</h3>
-                    <div className={`mt-2 inline-flex px-3 py-1 rounded-full text-xs font-bold ${
-                      analysisResult.status === 'SAFE' ? 'bg-emerald-900/50 text-emerald-400' : 
-                      analysisResult.status === 'WARNING' ? 'bg-yellow-900/50 text-yellow-400' : 
-                      'bg-red-900/50 text-red-400'
-                    }`}>
-                      {analysisResult.status}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-4xl font-bold text-slate-200">{analysisResult.safetyScore}%</div>
-                    <div className="text-xs text-slate-500 uppercase">Safety Score</div>
-                  </div>
-                </div>
-                <div className="space-y-4 text-sm">
-                  <p className="text-slate-400"><strong>Reasoning:</strong> {analysisResult.reasoning}</p>
-                  {analysisResult.hazards?.map((h, i) => (
-                    <div key={i} className="flex items-start text-red-300 mt-2">
-                      <AlertTriangle className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" /> 
-                      <span>{h}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+          {/* Results Area (The Big Upgrade) */}
+          <div className="flex-1 p-6 md:p-8 flex flex-col font-sans overflow-y-auto">
             
+            {/* Empty State */}
             {!isAnalyzing && !analysisResult && (
-               <div className="m-auto text-slate-600 flex flex-col items-center">
-                 <Upload className="w-10 h-10 mb-4 opacity-50" />
-                 <p className="text-center">Paste protocol text below,<br/>or upload a PDF and Lab Setup (Image) to begin audit.</p>
+               <div className="m-auto flex flex-col items-center justify-center text-slate-500 max-w-sm text-center">
+                 <div className="w-16 h-16 rounded-2xl bg-slate-800/50 flex items-center justify-center mb-6 border border-slate-700/50">
+                    <ShieldAlert className="w-8 h-8 text-slate-600" />
+                 </div>
+                 <h3 className="text-lg font-bold text-slate-300 mb-2">Awaiting Protocol</h3>
+                 <p className="text-sm text-slate-500 leading-relaxed">
+                   Paste protocol text below, or upload a PDF and Lab Setup image to initialize the Neuro-Symbolic audit.
+                 </p>
                </div>
             )}
+
+            {/* Loading State */}
+            {isAnalyzing && (
+              <div className="m-auto flex flex-col items-center text-[#D9FA50] animate-pulse">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 border-t-2 border-[#D9FA50] rounded-full animate-spin"></div>
+                  <div className="w-16 h-16 rounded-full bg-[#D9FA50]/10 flex items-center justify-center border border-[#D9FA50]/20">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                </div>
+                <span className="font-mono text-sm tracking-widest uppercase">Cross-Referencing Variables...</span>
+              </div>
+            )}
+
+            {/* The Premium Audit Report */}
+            {analysisResult && !isAnalyzing && (() => {
+              const colors = getStatusColors(analysisResult.status);
+              const circumference = 2 * Math.PI * 36; // SVG Circle radius 36
+              const strokeDashoffset = circumference - (analysisResult.safetyScore / 100) * circumference;
+
+              return (
+                <div className="w-full max-w-3xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  
+                  {/* Top Row: Title & Score Ring */}
+                  <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        {colors.icon}
+                        <h2 className="text-2xl font-bold text-white tracking-tight">{analysisResult.title}</h2>
+                      </div>
+                      <div className={`inline-flex px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase border ${colors.bg} ${colors.border} ${colors.text}`}>
+                        Status: {analysisResult.status}
+                      </div>
+                    </div>
+                    
+                    {/* SVG Score Ring */}
+                    <div className="flex items-center gap-4 bg-slate-950 px-6 py-4 rounded-xl border border-slate-800">
+                      <div className="relative w-20 h-20 flex items-center justify-center">
+                        <svg className="w-full h-full transform -rotate-90">
+                          <circle cx="40" cy="40" r="36" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-slate-800" />
+                          <circle cx="40" cy="40" r="36" stroke="currentColor" strokeWidth="6" fill="transparent" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} className={`transition-all duration-1000 ease-out ${colors.ring}`} />
+                        </svg>
+                        <span className="absolute text-xl font-bold text-white">{analysisResult.safetyScore}</span>
+                      </div>
+                      <div>
+                        <div className="text-xs text-slate-500 uppercase tracking-wider font-bold mb-1">Safety Index</div>
+                        <div className="text-xs text-slate-400">Determined via AI</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Hazard Cards */}
+                  {analysisResult.hazards && analysisResult.hazards.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4" /> Detected Conflicts
+                      </h3>
+                      {analysisResult.hazards.map((hazard, i) => (
+                        <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-rose-500/5 border border-rose-500/20">
+                          <div className="w-8 h-8 rounded-full bg-rose-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <ShieldAlert className="w-4 h-4 text-rose-400" />
+                          </div>
+                          <p className="text-sm text-slate-300 leading-relaxed">{hazard}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* AI Reasoning Section */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                    <div className="px-5 py-3 border-b border-slate-800 flex items-center gap-2 bg-slate-950/50">
+                      <Info className="w-4 h-4 text-slate-400" />
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Neuro-Symbolic Reasoning</span>
+                    </div>
+                    <div className="p-5 text-sm text-slate-300 leading-relaxed">
+                      {analysisResult.reasoning}
+                    </div>
+                  </div>
+
+                  {/* Action Bar */}
+                  <div className="pt-4 flex justify-end gap-3 border-t border-slate-800">
+                    <button className="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-2">
+                      <FileDown className="w-4 h-4" /> Export Report
+                    </button>
+                    {analysisResult.status !== 'SAFE' && (
+                      <button className="px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-white hover:bg-slate-700 transition-colors">
+                        Acknowledge Risk
+                      </button>
+                    )}
+                  </div>
+
+                </div>
+              );
+            })()}
           </div>
 
-          {/* Input Area */}
+          {/* Input Area (Untouched logic, slightly refined UI) */}
           <div className="border-t border-slate-800 p-4 bg-slate-900 flex flex-col gap-4">
             
             {/* Display Selected Files */}
@@ -119,23 +196,20 @@ const ChatInterface = () => {
               </div>
             )}
 
-            {/* NEW Text Bar + Upload Setup */}
+            {/* Text Bar + Upload Setup */}
             <div className="flex gap-3">
               <div className="flex-1 relative flex items-center bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 focus-within:border-[#D9FA50]/50 transition-colors">
-                
-                {/* Text Input */}
                 <input 
                   type="text"
                   value={textInput}
                   onChange={(e) => setTextInput(e.target.value)}
                   placeholder="Paste protocol text or add context..."
-                  className="w-full bg-transparent text-sm text-white focus:outline-none placeholder-slate-500 py-2"
+                  className="w-full bg-transparent text-sm text-white focus:outline-none placeholder-slate-500 py-2 font-mono"
+                  onKeyDown={(e) => { if(e.key === 'Enter') runAnalysis(); }}
                 />
                 
-                {/* Separator Line */}
                 <div className="h-6 w-px bg-slate-800 mx-3"></div>
                 
-                {/* File Upload Icon */}
                 <input 
                   type="file" 
                   multiple 
@@ -149,16 +223,14 @@ const ChatInterface = () => {
                 </label>
               </div>
               
-              {/* Submit Button */}
               <button
                 onClick={runAnalysis}
                 disabled={isAnalyzing || (selectedFiles.length === 0 && !textInput.trim())}
-                className="px-6 rounded-xl bg-[#D9FA50] text-slate-900 hover:bg-[#c9eb3b] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm font-semibold"
+                className="px-6 rounded-xl bg-[#D9FA50] text-slate-900 hover:bg-[#c9eb3b] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm font-semibold flex items-center justify-center min-w-[60px]"
               >
                 {isAnalyzing ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowUp className="w-5 h-5" />}
               </button>
             </div>
-
           </div>
         </div>
       </div>
